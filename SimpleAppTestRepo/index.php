@@ -1,10 +1,28 @@
 <?php
 	error_reporting(1);
-	include_once("model.inc.php");
+	//include_once("model.inc.php");
 	
-	$clsdb = new DB(); 
+	//$clsdb = new DB(); 
+	function SELECT($sql) {
+			$resultsToArray = array();
+			
+			$db = new mysqli("localhost", "root", "", "simple_db");
+			if($db->connect_errno > 0){
+				die('Unable to connect to database [' . $db->connect_error . ']');
+			}
+			if(!$result = $db->query($sql)){
+				die('There was an error running the query [' . $db->error . ']');
+			}
+			
+			while($row = $result->fetch_assoc()){
+				array_push($resultsToArray, $row);
+			}
+	
+			return $resultsToArray;
+		}
 
-	$data = $clsdb->SELECT("SELECT u.id, CONCAT(u.LAST_NAME, ' ', u.FIRST_NAME) AS NAME , 
+
+	$data = SELECT("SELECT u.id, CONCAT(u.LAST_NAME, ' ', u.FIRST_NAME) AS NAME , 
 						GROUP_CONCAT((SELECT name FROM TBL_TEAMS t WHERE t.id = tu.team_id) SEPARATOR ', ') AS TEAMS
 						FROM TBL_TEAMS_USERS tu 
 						INNER JOIN TBL_USERS u ON u.id = tu.user_id 
