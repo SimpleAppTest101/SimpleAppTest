@@ -13,7 +13,6 @@
 			if(!$result = $db->query($sql)){
 				die('There was an error running the query [' . $db->error . ']');
 			}
-			
 			while($row = $result->fetch_assoc()){
 				array_push($resultsToArray, $row);
 			}
@@ -27,6 +26,15 @@
 						FROM TBL_TEAMS_USERS tu 
 						INNER JOIN TBL_USERS u ON u.id = tu.user_id 
 						GROUP BY u.LAST_NAME");
+						
+	/*$data = SELECT("SELECT u.id, CONCAT(u.LAST_NAME, ' ', u.FIRST_NAME) AS NAME , 
+						t.name AS TEAMS
+						FROM TBL_TEAMS_USERS tu 
+						INNER JOIN TBL_USERS u ON u.id = tu.user_id 
+                        INNER JOIN TBL_TEAMS t ON t.id = tu.team_id ORDER BY u.id ASC");					
+						*/
+						
+				
 ?>
 
 
@@ -53,11 +61,20 @@
             </thead>
             <tbody>
             	<?php
+					$id;
+					
 					foreach($data as $d) { ?>
                     	<tr>
-                            <td><?php echo $d['id'] ?></td>
-                            <td><?php echo $d['NAME'] ?></td>
-                            <td><?php echo $d['TEAMS'] ?></td>
+					   		<td><?php echo $d['id'] ?></td>	
+                            <td><?php echo $d['NAME'] ?></td>	
+                            <?php
+								$atags = "";
+								$myArray = explode(',', $d['TEAMS']);
+								foreach($myArray as $val) {
+									$atags .= '<a href="#'.strtolower(str_replace(" ","_",trim($val))).'">'.$val.'</a>';
+								}
+							?>
+                            <td><?php echo $atags ?></td>
 						</tr><?php
 					}
 				?>
