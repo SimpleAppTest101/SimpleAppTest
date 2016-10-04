@@ -4,14 +4,11 @@
 	
 	$clsdb = new DB(); 
 
-	$data = $clsdb->SELECT("SELECT CONCAT(u.LAST_NAME, ' ', u.FIRST_NAME) AS NAME , 
+	$data = $clsdb->SELECT("SELECT u.id, CONCAT(u.LAST_NAME, ' ', u.FIRST_NAME) AS NAME , 
 						GROUP_CONCAT((SELECT name FROM TBL_TEAMS t WHERE t.id = tu.team_id) SEPARATOR ', ') AS TEAMS
 						FROM TBL_TEAMS_USERS tu 
 						INNER JOIN TBL_USERS u ON u.id = tu.user_id 
 						GROUP BY u.LAST_NAME");
-						
-	
-	print_r($data);
 ?>
 
 
@@ -37,11 +34,15 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>John</td>
-                    <td>Carter</td>
-                </tr>
+            	<?php
+					foreach($data as $d) { ?>
+                    	<tr>
+                            <td><?php echo $d['id'] ?></td>
+                            <td><?php echo $d['NAME'] ?></td>
+                            <td><?php echo $d['TEAMS'] ?></td>
+						</tr><?php
+					}
+				?>
             </tbody>
         </table>
     </div>
